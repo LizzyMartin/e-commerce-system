@@ -1,0 +1,9 @@
+# Ignore tudo
+**
+
+# Permita estes arquivos/diretórios
+!gradlew
+!gradle/
+!src/
+!build.gradle
+!settings.gradle

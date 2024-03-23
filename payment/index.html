@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Página de Pagamento</title>
+    <style>
+        /* Adicione seu CSS aqui */
+        .item {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="carrinho">
+        <!-- Os itens do carrinho serão inseridos aqui -->
+    </div>
+
+    <button onclick="concluirCompra()">Concluir Compra</button>
+
+    <script>
+        // Adicione seu JavaScript aqui
+
+        // Função para buscar os itens do carrinho da API
+        function buscarItensDoCarrinho() {
+            fetch('http://localhost:8082/cart')
+                .then(response => response.json())
+                .then(data => exibirItensDoCarrinho(data))
+                .catch(error => console.error('Erro:', error));
+        }
+
+        // Função para exibir os itens do carrinho
+        function exibirItensDoCarrinho(data) {
+            var divCarrinho = document.getElementById('carrinho');
+            divCarrinho.innerHTML = '';  // Limpe o conteúdo atual
+
+            // Adicione cada item do carrinho à div
+            data.forEach(item => {
+                var divItem = document.createElement('div');
+                divItem.className = 'item';
+                divItem.textContent = item.nome + ': ' + item.preco;
+                divCarrinho.appendChild(divItem);
+            });
+        }
+
+        // Função para simular a conclusão da compra
+        function concluirCompra() {
+            alert('Compra concluída!');
+            buscarItensDoCarrinho();  // Atualize a exibição do carrinho
+        }
+
+        // Busque os itens do carrinho quando a página for carregada
+        window.onload = buscarItensDoCarrinho;
+    </script>
+</body>
+</html>
