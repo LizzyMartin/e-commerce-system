@@ -13,6 +13,7 @@ O banco de dados escolhido foi o mongodb devido sua facilidade de uso.
 Para executar o projeto localmente é necessário que você tenha o Docker instalado em sua máquina, com isso, basta executar o comando abaixo:
 
 ```bash
+./build-jar.sh
 docker compose up
 ```
 
@@ -27,6 +28,16 @@ Com isso tanto os microsserviços como o banco de dados deverão ter subido. Par
 
     - GET <http://localhost:8081/items>
     - GET <http://localhost:8081/items/{id}>
+    - POST <http://localhost:8081/items>
+    - POST <http://localhost:8082/cart>
+
+        ```json
+            {
+                "userId": "123",
+                "productId": "123",
+                "quantity": 1
+            }
+        ```
 
 3. Para visualizar o carrinho, basta acessar a URL abaixo:
 
