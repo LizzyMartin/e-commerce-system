@@ -1,0 +1,11 @@
+FROM amazoncorretto:21-alpine-jdk
+
+ENV ARTIFACT_NAME=cart-0.0.1-SNAPSHOT.jar
+ENV APP_HOME=/usr/app/
+
+WORKDIR $APP_HOME
+
+COPY ./build/libs/${ARTIFACT_NAME} .
+
+EXPOSE 8082
+CMD java -jar $ARTIFACT_NAME

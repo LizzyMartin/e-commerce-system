@@ -1,34 +1,55 @@
 version: '3'
 services:
-  service1:
+  auth:
     build: 
       context: ./auth
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    depends_on:
+      - mongo
+    networks:
+      - mynetwork
 
-  service2:
+  items:
     build: 
       context: ./items-management
       dockerfile: Dockerfile
     ports:
       - "8081:8081"
+    depends_on:
+      - mongo
+    networks:
+      - mynetwork
 
-  service3:
+  cart:
     build: 
       context: ./cart
       dockerfile: Dockerfile
     ports:
       - "8082:8082"
+    depends_on:
+      - mongo
+    networks:
+      - mynetwork
 
-  service4:
+  payment:
     build: 
       context: ./payment
       dockerfile: Dockerfile
     ports:
       - "80:80"
+    depends_on:
+      - cart
+    networks:
+      - mynetwork
 
   mongo:
     image: mongo
     ports:
       - "27017:27017"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:

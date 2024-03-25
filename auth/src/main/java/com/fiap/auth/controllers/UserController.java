@@ -4,10 +4,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fiap.auth.service.UserService;
@@ -23,7 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<String> getUserById(Authentication authentication, @RequestParam String id) {
+    public ResponseEntity<String> getUserById(Authentication authentication, @PathVariable String id) {
         try {
             var user = userService.findByID(id);
             return ResponseEntity.ok(user.toString());
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/admin")
-    public ResponseEntity<String> createAdmin(Authentication authentication, @RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<String> createAdmin(Authentication authentication, @RequestBody String username, @RequestBody String password) {
         if (!authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("admin"))) {
             return ResponseEntity.badRequest().body("You don't have permission to create an admin");
         }
@@ -42,13 +43,13 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createUser(Authentication authentication, @RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<String> createUser(Authentication authentication, @RequestBody String username, @RequestBody String password) {
         userService.createNewUser(username, password);
         return ResponseEntity.ok("User created");
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteUser(Authentication authentication, @RequestParam String id) {
+    public ResponseEntity<String> deleteUser(Authentication authentication, @PathVariable String id) {
         var user = userService.findByID(id);
         if (user == null) {
             return ResponseEntity.badRequest().body("User not found");
@@ -63,7 +64,7 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<String> updatePassword(Authentication authentication, @RequestParam String id, @RequestParam String password) {
+    public ResponseEntity<String> updatePassword(Authentication authentication, @RequestBody String id, @RequestBody String password) {
         var user = userService.findByID(id);
         if (user == null) {
             return ResponseEntity.badRequest().body("User not found");

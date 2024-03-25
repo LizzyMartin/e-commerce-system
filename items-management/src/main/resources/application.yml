@@ -1,6 +1,12 @@
+jwt:
+  public.key: classpath:app.pub
+
 spring:
   application:
     name: item-api
+  data:
+    mongodb:
+      uri: mongodb://mongo:27017/fiap
 
 server:
   port: 8081

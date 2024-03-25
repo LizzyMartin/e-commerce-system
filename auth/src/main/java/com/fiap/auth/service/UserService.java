@@ -1,5 +1,6 @@
 package com.fiap.auth.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fiap.auth.model.User;
@@ -9,9 +10,11 @@ import com.fiap.auth.repository.UserRepository;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User findByID(String id) {
@@ -32,7 +35,7 @@ public class UserService {
 
     public void updatePassword(String id, String password) {
         User user = userRepository.findById(id).get();
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
     }
 
