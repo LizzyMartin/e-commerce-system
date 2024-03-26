@@ -14,7 +14,7 @@ import lombok.Setter;
 public class Item {
     
     @Id
-    private int id;
+    private String id;
     private String name;
     private String description;
     private double price;

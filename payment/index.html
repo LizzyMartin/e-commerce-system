@@ -17,27 +17,62 @@
     <button onclick="concluirCompra()">Concluir Compra</button>
 
     <script>
-        // Adicione seu JavaScript aqui
-
         // Função para buscar os itens do carrinho da API
         function buscarItensDoCarrinho() {
-            fetch('http://localhost:8082/cart')
-                .then(response => response.json())
-                .then(data => exibirItensDoCarrinho(data))
-                .catch(error => console.error('Erro:', error));
-        }
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", "Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoidXNlciIsImV4cCI6MTcxMTQ0NzQyMiwiaWF0IjoxNzExNDExNDIyLCJzY29wZSI6InVzZXIifQ.zrvB1hSj1Ro__qGL1VF-AWoNrUEkgevh_m59tDO7DQuk2griPkHtbXApU6jFak3n_4MUOkITH01a9EfltzobsKE5jp6W_u3WUlh7SGQCtKwyr5-A4EtDI3UoOXHYbDcLKpcVWT-spSk-2-si8yQPTggTO44wltZkLRKWo_eSSRFYWDbmpG-Myqdg-DDGD39o-L6jTYAhOWLJ8CP6h7CbZJMFXBQRfm9cn2oIRVA0o5Lgkw5mlsLAfpwoVKRZj5kH97WPKvR2kYNYNYfF3GzAQC1jd0xsf7TcnJXsnevqE9TDzM260Qjq-FI_G-5ecZZhrwKXLkjk72PM6nDB3cfgjA");
 
-        // Função para exibir os itens do carrinho
+            fetch('http://localhost:8082/cart/66020d7f465f0f6ff626b271', {
+                method: 'GET',
+                headers: myHeaders,
+            })
+            .then(response => response.json())
+            .then(data => exibirItensDoCarrinho(data))
+            .catch(error => console.error('Erro:', error));
+        }
+        
         function exibirItensDoCarrinho(data) {
             var divCarrinho = document.getElementById('carrinho');
-            divCarrinho.innerHTML = '';  // Limpe o conteúdo atual
+
+            // Limpe o carrinho antes de adicionar novos itens
+            divCarrinho.innerHTML = '';
+
+            // Initialize total value
+            var valorTotal = 0;
+
+            var fetchPromises = [];
 
             // Adicione cada item do carrinho à div
-            data.forEach(item => {
-                var divItem = document.createElement('div');
-                divItem.className = 'item';
-                divItem.textContent = item.nome + ': ' + item.preco;
-                divCarrinho.appendChild(divItem);
+            for (var productId in data["products"]) {
+                var quantity = data["products"][productId];
+
+                var myHeaders = new Headers();
+                myHeaders.append("Authorization", "Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoidXNlciIsImV4cCI6MTcxMTQ1MDIxMCwiaWF0IjoxNzExNDE0MjEwLCJzY29wZSI6InVzZXIifQ.S5Jd4hymW1OuNNHGPVx6__0T_6Fg3NlXM-ZCQf--TOxVXOmgsq-uMK8DPqRAsxp_Nc0kjcSfdqrGC2vp7unM1q2zhRMV8LPskN9PTVhXyPQO5Q4k_oMQVw6jZg1epe9E3wh3zwukyzZKXsXE3Giz06kPMzHsI-qV6wM5UsjcyhqYkibAi8MMhFVP4Bt4cVBhtRIHd6M9yhjgBjQnUKk2COwYuMxn0pivRP1iaBEL8RNapxks0iBE_YuhApImBYhe-pl0widM82SYq4ecpbyeJ1k_vKqBOYnqaPEGRQpj7GzZqQKYGwqgcuoQw2E40SuKZ1V8dmZJBnDag9lu1CxWSQ");
+
+                var fetchPromise = fetch('http://localhost:8081/items/' + productId, {
+                    method: 'GET',
+                    headers: myHeaders,
+                })
+                .then(response => response.json())
+                .then(itemData => {
+                    console.log(itemData)
+                    var divItem = document.createElement('div');
+                    divItem.className = 'item';
+                    divItem.textContent = 'Nome: ' + itemData.name + ', Descrição: ' + itemData.description + ', Preço: ' + itemData.price + ', Quantidade: ' + itemData.quantity;
+                    divCarrinho.appendChild(divItem);
+
+                    valorTotal += itemData.price * itemData.quantity;
+                    console.log(valorTotal);
+                })
+                .catch(error => console.error('Erro:', error));
+                fetchPromises.push(fetchPromise);
+            }
+
+            Promise.all(fetchPromises).then(() => {
+                var divValorTotal = document.createElement('div');
+                divValorTotal.className = 'valorTotal';
+                divValorTotal.textContent = 'Valor total: ' + valorTotal;
+                divCarrinho.appendChild(divValorTotal);
             });
         }
 

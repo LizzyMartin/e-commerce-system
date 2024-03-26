@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.fiap.items.models.Item;
 import com.fiap.items.services.ItemService;
 
 @RestController
 @RequestMapping("/items")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class ItemController {
 
     private final ItemService itemService;
@@ -36,7 +38,7 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<String> save(Authentication authentication, @RequestBody Item item) {
-        if (!authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("admin"))) {
+        if (authentication.getName().equals("admin")) {
             return ResponseEntity.status(403).body("Forbidden");
         }
         itemService.save(item);
@@ -45,7 +47,7 @@ public class ItemController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteById(Authentication authentication, @PathVariable String id) {
-        if (!authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("admin"))) {
+        if (authentication.getName().equals("admin")) {
             return ResponseEntity.status(403).body("Forbidden");
         }
         itemService.deleteById(id);
@@ -54,7 +56,7 @@ public class ItemController {
 
     @PutMapping
     public ResponseEntity<String> update(Authentication authentication, @RequestBody Item item) {
-        if (!authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("admin"))) {
+        if (authentication.getName().equals("admin")) {
             return ResponseEntity.status(403).body("Forbidden");
         }
         itemService.update(item);

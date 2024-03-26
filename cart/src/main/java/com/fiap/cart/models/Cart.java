@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Map;
+import java.util.HashMap;
 
 @Setter
 @Getter
@@ -16,7 +17,7 @@ public class Cart {
     @Id
     private String id;
     private String userId;
-    private Map<String, Integer> products;
+    private Map<String, Integer> products = new HashMap<>();
 
     public Cart(String userId, Map<String, Integer> products) {
         this.userId = userId;

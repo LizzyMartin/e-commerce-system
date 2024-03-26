@@ -1,6 +1,7 @@
 package com.fiap.cart.services;
 
 import java.util.Map;
+import java.util.HashMap;
 
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class CartService {
     }
 
     public Cart addProductToCart(String userId, String productId, int quantity) {
-        var cart = cartRepository.findByUserId(userId).orElse(new Cart(userId, Map.of()));
+        Cart cart = cartRepository.findByUserId(userId).orElse(new Cart(userId, new HashMap<>()));
         cart.addProduct(productId, quantity);
         return cartRepository.save(cart);
     }

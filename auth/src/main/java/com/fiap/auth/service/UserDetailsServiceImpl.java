@@ -9,12 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.fiap.auth.repository.UserRepository;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Set;
 import java.util.HashSet;
 
-@Slf4j
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -30,10 +27,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        log.info(username);
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole()));
-        log.info(authorities.toString());
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 
